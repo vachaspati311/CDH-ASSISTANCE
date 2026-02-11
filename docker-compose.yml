@@ -1,0 +1,50 @@
+services:
+  chromadb:
+    image: chromadb/chroma:0.5.0
+    container_name: pega-chromadb
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./data/chroma:/chroma/chroma
+    environment:
+      - IS_PERSISTENT=TRUE
+      - PERSIST_DIRECTORY=/chroma/chroma
+      - ANONYMIZED_TELEMETRY=FALSE
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/v1/heartbeat"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
+  ollama:
+    image: ollama/ollama:latest
+    container_name: pega-ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ./data/ollama:/root/.ollama
+    # Simple command, no health check dependency
+    command: serve
+    # No health check - let app handle it
+
+  app:
+    build: .
+    container_name: pega-assistant
+    ports:
+      - "8501:8501"
+      - "8001:8001"
+    volumes:
+      - ./src:/app/src
+      - ./data:/app/data
+      - ./config.yaml:/app/config.yaml
+    environment:
+      - PYTHONPATH=/app
+      - CHROMA_HOST=chromadb
+      - OLLAMA_HOST=ollama
+      - OLLAMA_MODEL=llama3.1:8b
+    env_file:
+      - .env
+    depends_on:
+      - chromadb
+      - ollama

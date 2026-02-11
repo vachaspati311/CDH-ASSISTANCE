@@ -1,0 +1,33 @@
+# Core
+fastapi==0.110.0
+uvicorn[standard]==0.29.0
+streamlit==1.32.0
+pydantic==2.6.0
+python-dotenv==1.0.0
+pyyaml==6.0.1
+
+# AI - OpenAI for embeddings, Ollama for chat
+openai==1.12.0
+ollama==0.1.7
+
+# Vector DB
+chromadb==0.5.0
+
+# Web Scraping - Open Source Only (NO Firecrawl)
+tavily-python==0.3.0
+playwright==1.42.0
+scrapy==2.11.0
+beautifulsoup4==4.12.3
+requests==2.31.0
+urllib3==2.2.0
+selenium==4.18.0
+
+# Async & Processing
+celery==5.3.0
+redis==5.0.0
+aiohttp==3.9.0
+asyncio==3.4.3
+
+# Data
+pandas==2.2.0
+numpy==1.26.0

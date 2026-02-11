@@ -1,0 +1,74 @@
+app:
+  name: "Pega CDH Upgrade Assistant"
+  version: "2.1.1"
+  description: "Optimized for M4 16GB MacBook - Llama 3.1"
+
+pega:
+  source_version: "8.7.1"
+  target_version: "25.1"
+  components:
+    - platform
+    - cdh
+    - openshift
+    - kafka
+    - srs
+    - hazelcast
+    - elasticsearch
+    - cassandra
+    - postgres
+
+ai:
+  embedding:
+    provider: "openai"
+    model: "text-embedding-3-large"
+    dimensions: 3072
+  llm:
+    provider: "ollama"
+    primary_model: "llama3.1:8b"
+    coding_model: "codellama:7b"
+    fallback_model: "mistral:7b"
+    temperature: 0.1
+    context_window: 8192
+
+scraping:
+  sources:
+    - name: "pega_cdh_upgrade"
+      type: "tavily"
+      query: "Pega Customer Decision Hub upgrade 8.7 to infinity25.1 site:docs.pega.com"
+      depth: 3
+    - name: "pega_platform_upgrade"
+      type: "tavily"
+      query: "Pega Platform Infinity 25 upgrade installation site:docs.pega.com"
+      depth: 3
+    - name: "pega_deprecated"
+      type: "playwright"
+      url: "https://docs.pega.com/bundle/customer-service/page/customer-service/release-notes/deprecated-withdrawn-features.html"
+      max_pages: 5
+    - name: "pega_openshift"
+      type: "playwright"
+      url: "https://pegasystems.github.io/pega-helm-charts/"
+      max_pages: 10
+
+agents:
+  research:
+    name: "ResearchAgent"
+    description: "Deep research using Tavily and Playwright"
+  upgrade_planner:
+    name: "UpgradePlanner"
+    description: "Creates comprehensive upgrade strategies"
+  risk_analyzer:
+    name: "RiskAnalyzer"
+    description: "Identifies and assesses upgrade risks"
+  openshift_specialist:
+    name: "OpenShiftSpecialist"
+    description: "Kubernetes and OpenShift deployment expert"
+  cdh_specialist:
+    name: "CDHSpecialist"
+    description: "Customer Decision Hub specific expert"
+
+vectorstore:
+  collection_name: "pega_knowledge"
+  distance_metric: "cosine"
+  chunk_size: 1000
+  chunk_overlap: 200
+  top_k: 10
